@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:logging/logging.dart';
 import 'package:path/path.dart' as path;
+import 'package:path_provider/path_provider.dart';
 
 export 'package:logging/logging.dart' show Level;
 
@@ -22,7 +23,7 @@ class ZnnPaths {
         cache = cache;
 }
 
-ZnnPaths _getDefaultPaths() {
+Future<ZnnPaths> _getDefaultPaths() async {
   late Directory main;
   if (Platform.isLinux) {
     main = Directory(
@@ -33,6 +34,8 @@ ZnnPaths _getDefaultPaths() {
   } else if (Platform.isWindows) {
     main = Directory(
         path.join(Platform.environment['AppData']!, znnRootDirectory));
+  } else if (Platform.isAndroid || Platform.isIOS) {
+    main = await getApplicationSupportDirectory();
   } else {
     main =
         Directory(path.join(Platform.environment['HOME']!, znnRootDirectory));
@@ -43,15 +46,34 @@ ZnnPaths _getDefaultPaths() {
       cache: Directory(path.join(main.path, 'syrius')));
 }
 
-ZnnPaths znnDefaultPaths = _getDefaultPaths();
-Directory znnDefaultDirectory = znnDefaultPaths.main;
-Directory znnDefaultWalletDirectory = znnDefaultPaths.wallet;
-Directory znnDefaultCacheDirectory = znnDefaultPaths.cache;
+Future<Directory> znnDefaultMainDirectory =
+    _getDefaultPaths().then((value) => value.main);
+Future<Directory> znnDefaultWalletDirectory =
+    _getDefaultPaths().then((value) => value.wallet);
+Future<Directory> znnDefaultCacheDirectory =
+    _getDefaultPaths().then((value) => value.cache);
 
-void ensureDirectoriesExist() {
+Future<Directory> getZnnDefaultMainDirectory() async {
+  ZnnPaths znnPaths = await _getDefaultPaths();
+  return znnPaths.main;
+}
+
+Future<Directory> getZnnDefaultWalletDirectory() async {
+  ZnnPaths znnPaths = await _getDefaultPaths();
+  return znnPaths.wallet;
+}
+
+Future<Directory> getZnnDefaultCacheDirectory() async {
+  ZnnPaths znnPaths = await _getDefaultPaths();
+  return znnPaths.cache;
+}
+
+void ensureDirectoriesExist() async {
+  Directory znnDefaultWalletDirectory = await getZnnDefaultWalletDirectory();
   if (!znnDefaultWalletDirectory.existsSync()) {
     znnDefaultWalletDirectory.createSync(recursive: true);
   }
+  Directory znnDefaultCacheDirectory = await getZnnDefaultCacheDirectory();
   if (!znnDefaultCacheDirectory.existsSync()) {
     znnDefaultCacheDirectory.createSync(recursive: true);
   }

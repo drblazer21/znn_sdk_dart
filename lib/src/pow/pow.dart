@@ -30,12 +30,13 @@ var _benchmarkFunction;
 // Loads the dynamic pow_links library and maps the required functions. Throws if fails.
 // Called automatically from `GeneratePow` and `BenchmarkPoW` if not called in advance.
 void initializePoWLinks() {
-  var insideSdk = path.join('znn_sdk_dart', 'lib', 'src', 'pow', 'blobs');
-  var currentPathListParts = path.split(Directory.current.path);
+  String insideSdk = path.join('znn_sdk_dart', 'lib', 'src', 'pow', 'blobs');
+  List<String> currentPathListParts = path.split(Directory.current.path);
   currentPathListParts.removeLast();
-  var executablePathListParts = path.split(Platform.resolvedExecutable);
+  List<String> executablePathListParts =
+      path.split(Platform.resolvedExecutable);
   executablePathListParts.removeLast();
-  var possiblePaths = List<String>.empty(growable: true);
+  List<String> possiblePaths = List<String>.empty(growable: true);
   possiblePaths.add(Directory.current.path);
   possiblePaths.add(path.joinAll(executablePathListParts));
   executablePathListParts.removeLast();
@@ -58,11 +59,13 @@ void initializePoWLinks() {
     });
   }
 
-  var libraryPath = '';
-  var found = false;
+  String libraryPath = '';
+  bool found = false;
 
-  for (var currentPath in possiblePaths) {
-    libraryPath = path.join(currentPath, 'libpow_links.so');
+  for (String currentPath in possiblePaths) {
+    if (Platform.isLinux || Platform.isAndroid) {
+      libraryPath = path.join(currentPath, 'libpow_links.so');
+    }
 
     if (Platform.isMacOS) {
       libraryPath = path.join(currentPath, 'libpow_links.dylib');
@@ -70,11 +73,8 @@ void initializePoWLinks() {
     if (Platform.isWindows) {
       libraryPath = path.join(currentPath, 'libpow_links.dll');
     }
-    if (Platform.isAndroid) {
-      libraryPath = path.join(currentPath, 'libpow_links-arm64-v8a.so');
-    }
 
-    var libFile = File(libraryPath);
+    File libFile = File(libraryPath);
 
     if (libFile.existsSync()) {
       found = true;
@@ -84,7 +84,7 @@ void initializePoWLinks() {
 
   logger.info('Loading libpow_links from path ' + libraryPath);
 
-  if (!found) {
+  if (!found && !Platform.isIOS) {
     throw invalidPowLinksLibPathException;
   }
 
