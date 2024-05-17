@@ -63,7 +63,7 @@ void initializePoWLinks() {
   bool found = false;
 
   for (String currentPath in possiblePaths) {
-    if (Platform.isLinux || Platform.isAndroid) {
+    if (Platform.isLinux) {
       libraryPath = path.join(currentPath, 'libpow_links.so');
     }
 
@@ -74,8 +74,13 @@ void initializePoWLinks() {
       libraryPath = path.join(currentPath, 'libpow_links.dll');
     }
 
-    File libFile = File(libraryPath);
+    if (Platform.isAndroid) {
+      libraryPath = 'libpow_links.so';
+      found = true;
+      break;
+    }
 
+    File libFile = File(libraryPath);
     if (libFile.existsSync()) {
       found = true;
       break;
