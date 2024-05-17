@@ -8,6 +8,7 @@ import 'package:ffi/ffi.dart';
 import 'package:path/path.dart' as path;
 import 'package:znn_sdk_dart/src/global.dart';
 import 'package:znn_sdk_dart/src/model/primitives/hash.dart';
+import 'package:znn_sdk_dart/src/utils/path.dart';
 
 enum PowStatus {
   generating,
