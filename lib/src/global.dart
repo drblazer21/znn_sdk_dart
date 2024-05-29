@@ -6,7 +6,7 @@ import 'package:znn_sdk_dart/src/utils/path_stub.dart'
     if (dart.library.ui) 'package:znn_sdk_dart/src/utils/path_flutter.dart'
     if (dart.library.io) 'package:znn_sdk_dart/src/utils/path_dart.dart';
 
-const znnSdkVersion = '0.0.7';
+const znnSdkVersion = '0.2.0';
 const znnRootDirectory = 'znn';
 
 Future<Directory> znnDefaultMainDirectory =
