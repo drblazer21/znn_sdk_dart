@@ -21,8 +21,7 @@ Argon2FfiFlutter initArgon2() {
     } else if (Platform.isIOS) {
       DynamicLibrary.process();
     } else {
-      String insideSdk =
-          path.join('znn_sdk_dart', 'lib', 'src', 'argon2', 'blobs');
+      String insideSdk = path.join('lib', 'src', 'argon2', 'blobs');
       List<String> currentPathListParts = path.split(Directory.current.path);
       currentPathListParts.removeLast();
       List<String> executablePathListParts =
@@ -57,6 +56,6 @@ Argon2FfiFlutter initArgon2() {
       }
       logger.info('Loading ' + libraryName + ' from path ' + libraryPath);
     }
-    return libraryName;
+    return libraryPath;
   });
 }

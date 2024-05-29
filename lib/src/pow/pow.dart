@@ -31,7 +31,7 @@ var _benchmarkFunction;
 // Loads the dynamic pow_links library and maps the required functions. Throws if fails.
 // Called automatically from `GeneratePow` and `BenchmarkPoW` if not called in advance.
 void initializePoWLinks() {
-  String insideSdk = path.join('znn_sdk_dart', 'lib', 'src', 'pow', 'blobs');
+  String insideSdk = path.join('lib', 'src', 'pow', 'blobs');
   List<String> currentPathListParts = path.split(Directory.current.path);
   currentPathListParts.removeLast();
   List<String> executablePathListParts =
